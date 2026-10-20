@@ -1,0 +1,20 @@
+{
+  "name": "Saphal Music",
+  "short_name": "Saphal Music",
+  "description": "Learn guitar and piano from the very first note, with a playable keyboard, fretboard, metronome and tuner. Works offline.",
+  "id": "/saphal-music/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#161513",
+  "theme_color": "#161513",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "music"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
