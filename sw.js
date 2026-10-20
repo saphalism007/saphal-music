@@ -2,7 +2,9 @@
  * Offline support for Saphal Music, published at /saphal-music/.
  *
  * The whole app lives inside index.html, so caching that page, the manifest
- * and the icons is enough to make it work with no connection.
+ * and the icons is enough to make it work with no connection. The page is
+ * always served from that saved copy, so the app opens instantly even on a
+ * slow or missing connection.
  *
  * Several projects share the saphalism007.github.io origin. This worker is
  * registered with the scope /saphal-music/ and, as a second guard, ignores
@@ -10,7 +12,7 @@
  * with saphal-music- and it only ever deletes its own old caches.
  */
 const PREFIX = "saphal-music-";
-const CACHE = PREFIX + "202610201242";
+const CACHE = PREFIX + "202610201302";
 const BASE = new URL("./", self.location).pathname; // "/saphal-music/"
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
@@ -41,18 +43,22 @@ self.addEventListener("fetch", (event) => {
   if (!ours(url)) return; // another project's file, or another site: leave it alone
 
   if (request.mode === "navigate" && (url.pathname === BASE || url.pathname === BASE + "index.html")) {
-    // Always ask the network for the newest page, skipping the browser's
-    // ten minute copy, and fall back to the saved page when offline.
+    // Open instantly from the copy saved on the device. Updates do not need
+    // the network on the way in: every publish changes this worker file, the
+    // app asks for it on every launch, and the new worker downloads the new
+    // page itself (with no-store, so GitHub's ten minute browser copy is
+    // skipped) and then tells the app to switch over.
     event.respondWith(
-      fetch(BASE, { cache: "no-store" })
-        .then((response) => {
+      caches.open(CACHE)
+        .then((cache) => cache.match("./index.html"))
+        .then((hit) => hit || fetch(BASE, { cache: "no-store" }).then((response) => {
           if (response.ok) {
             const copy = response.clone();
             caches.open(CACHE).then((cache) => cache.put("./index.html", copy));
           }
           return response;
-        })
-        .catch(() => caches.match("./index.html").then((hit) => hit || caches.match("./")))
+        }))
+        .catch(() => caches.match("./index.html").then((hit) => hit || Response.error()))
     );
     return;
   }
