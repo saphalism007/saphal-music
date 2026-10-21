@@ -12,7 +12,7 @@
  * with saphal-music- and it only ever deletes its own old caches.
  */
 const PREFIX = "saphal-music-";
-const CACHE = PREFIX + "202610210102";
+const CACHE = PREFIX + "202610210148";
 const BASE = new URL("./", self.location).pathname; // "/saphal-music/"
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
@@ -41,6 +41,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (!ours(url)) return; // another project's file, or another site: leave it alone
+  if (url.pathname.endsWith("/version.json") || url.pathname.endsWith("/version.txt")) return; // always ask GitHub
 
   if (request.mode === "navigate" && (url.pathname === BASE || url.pathname === BASE + "index.html")) {
     // Open instantly from the copy saved on the device. Updates do not need
