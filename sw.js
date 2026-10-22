@@ -12,7 +12,7 @@
  * with saphal-music- and it only ever deletes its own old caches.
  */
 const PREFIX = "saphal-music-";
-const CACHE = PREFIX + "202610220907";
+const CACHE = PREFIX + "202610221357";
 const BASE = new URL("./", self.location).pathname; // "/saphal-music/"
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
